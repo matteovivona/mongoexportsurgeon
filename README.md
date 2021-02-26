@@ -13,7 +13,7 @@ docker build -t tehkapa/mongoexportsurgeon .
 ## Run
 
 ```
-docker run --name mongoas -it \
+docker run --name mongoes -it \
   -e DBNAME=database \
   -e USERNAME=user \
   -e PASSWORD=password \
@@ -24,4 +24,10 @@ docker run --name mongoas -it \
   tehkapa/mongoexportsurgeon
 ```
 
-You can pass organizationID on run command with `-e ORG=xxxxxxxxxx`
+or using .env file
+
+```
+docker run --name mongoes --env-file .env -it tehkapa/mongoexportsurgeon
+```
+
+You can pass organizationID on run command with `--env ORG=xxxxxxxxxx`

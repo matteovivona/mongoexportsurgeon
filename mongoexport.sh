@@ -33,12 +33,13 @@ while true; do
 
     aws s3 cp $PWD/$organization/$exportDate/${collectionArray[$i]}.json s3://$bucket/$organization/$exportDate/${collectionArray[$i]}.json
 
-    echo "Export Done, check S3 bucket folder $organization/${collectionArray[$i]}.json"
+    echo "${collectionArray[$i]} collection exported."
   done
+  echo "Done. All collections have been exported here s3://$bucket/$organization/$exportDate/"
   echo "Export another organization? [y/n] :"
   read response
   if [ "$response" != "y" ]; then
+    echo "Happy import! Bye!"
     break
-    echo "Bye!"
   fi
 done
