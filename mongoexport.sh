@@ -5,7 +5,8 @@ dbname=$DBNAME
 username=$USERNAME
 password=$PASSWORD
 host=$HOST
-organization=$ORG
+idValue=$ID
+keyField=$KEY
 bucket=$BUCKET
 aws_access_key_id=$AWSACCESSKEYID
 aws_secret_access_key=$AWSSECRETACCESSKEY
@@ -21,22 +22,26 @@ aws configure set aws_access_key_id $aws_access_key_id
 aws configure set aws_secret_access_key $aws_secret_access_key
 
 while true; do
-  if [ -z "$organization" ]; then
-    echo "Enter organization to export: "
-    read organization
+  if [ -z "$keyField" ]; then
+    echo "Enter Field to export:"
+    read keyField
   fi
-  mkdir -p $PWD/$organization/$exportDate
+  if [ -z "$idValue" ]; then
+    echo "Enter ID value to export:"
+    read idValue
+  fi
+  mkdir -p $PWD/$idValue/$exportDate
   for ((i = 0; i < ${#collectionArray[@]}; ++i)); do
-    echo "Exporting organization $organization from collection ${collectionArray[$i]}"
+    echo "Exporting $idValue from collection ${collectionArray[$i]}"
 
-    mongoexport --uri="mongodb+srv://$username:$password@$host/$dbname" --collection ${collectionArray[$i]} --query="{\"organization\": {\"\$oid\": \"$organization\"}}" --out $PWD/$organization/$exportDate/${collectionArray[$i]}.json
+    mongoexport --uri="mongodb+srv://$username:$password@$host/$dbname" --collection ${collectionArray[$i]} --query="{\"$keyField\": {\"\$oid\": \"$idValue\"}}" --out $PWD/$idValue/$exportDate/${collectionArray[$i]}.json
 
-    aws s3 cp $PWD/$organization/$exportDate/${collectionArray[$i]}.json s3://$bucket/$organization/$exportDate/${collectionArray[$i]}.json
+    aws s3 cp $PWD/$idValue/$exportDate/${collectionArray[$i]}.json s3://$bucket/$idValue/$exportDate/${collectionArray[$i]}.json
 
     echo "${collectionArray[$i]} collection exported."
   done
-  echo "Done. All collections have been exported here s3://$bucket/$organization/$exportDate/"
-  echo "Export another organization? [y/n] :"
+  echo "Done. All collections have been exported here s3://$bucket/$idValue/$exportDate/"
+  echo "Export another Field/Value? [y/n] :"
   read response
   if [ "$response" != "y" ]; then
     echo "Happy import! Bye!"

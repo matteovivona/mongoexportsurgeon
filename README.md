@@ -30,4 +30,4 @@ or using .env file
 docker run --name mongoes --env-file .env -it tehkapa/mongoexportsurgeon
 ```
 
-You can pass organizationID on run command with `--env ORG=xxxxxxxxxx`
+You can pass organizationID on run command with `--env ID=ac12cd3ef45 --env KEY=organization`
