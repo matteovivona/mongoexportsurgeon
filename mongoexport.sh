@@ -11,15 +11,24 @@ bucket=$BUCKET
 aws_access_key_id=$AWSACCESSKEYID
 aws_secret_access_key=$AWSSECRETACCESSKEY
 
-collections=$(mongo --quiet "mongodb+srv://$username:$password@$host/$dbname" --eval 'rs.slaveOk();db.getCollectionNames().join(" ");' | tail -1)
-IFS=', ' read -r -a collectionArray <<<"$collections"
+mongo --quiet "mongodb+srv://$username:$password@$host/$dbname" --eval "db.stats();"
+RESULT=$? # returns 0 if mongo eval succeeds
 
-echo "Connected to $host @ $dbname with $username"
-echo " "
-exportDate=$(date -Iseconds)
+if [ $RESULT -ne 0 ]; then
+  echo "Can't connect to MongoDB server"
+  exit 1
+  break
+else
+  collections=$(mongo --quiet "mongodb+srv://$username:$password@$host/$dbname" --eval 'rs.slaveOk();db.getCollectionNames().join(" ");' | tail -1)
+  IFS=', ' read -r -a collectionArray <<<"$collections"
 
-aws configure set aws_access_key_id $aws_access_key_id
-aws configure set aws_secret_access_key $aws_secret_access_key
+  echo "Connected to $host @ $dbname with $username"
+  echo " "
+  exportDate=$(date -Iseconds)
+
+  aws configure set aws_access_key_id $aws_access_key_id
+  aws configure set aws_secret_access_key $aws_secret_access_key
+fi
 
 while true; do
   if [ -z "$keyField" ]; then
