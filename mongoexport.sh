@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Declare connection variable
 dbname=$DBNAME
@@ -28,11 +29,14 @@ else
 
   aws configure set aws_access_key_id $aws_access_key_id
   aws configure set aws_secret_access_key $aws_secret_access_key
+
 fi
 
 while true; do
+  unset idValue
+  unset keyField
   if [ -z "$keyField" ]; then
-    echo "Enter Field to export:"
+    echo "Enter Field to export (tenant, organization, group, etc.):"
     read keyField
   fi
   if [ -z "$idValue" ]; then
@@ -50,10 +54,9 @@ while true; do
     echo "${collectionArray[$i]} collection exported."
   done
   echo "Done. All collections have been exported here s3://$bucket/$idValue/$exportDate/"
-  echo "Export another Field/Value? [y/n] :"
+  echo "Export another value of $keyField? [y/n] :"
   read response
   if [ "$response" != "y" ]; then
-    echo "Happy import! Bye!"
     break
   fi
 done
