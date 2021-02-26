@@ -4,3 +4,4 @@ Dockerfile
 LICENZE
 .github/
 .env
+.k8s/
