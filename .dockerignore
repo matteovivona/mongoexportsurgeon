@@ -1,7 +1,7 @@
 README.md
 .dockerignore
 Dockerfile
-LICENZE
+LICENSE
 .github/
 .env
 .k8s/
